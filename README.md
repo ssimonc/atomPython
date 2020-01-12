@@ -1,10 +1,11 @@
-# atomPython
+# atomPython - ENG
 An Agent-Based Financial Platform
 
-[ATOM](https://github.com/cristal-smac/atom) est une plateforme de simulation de marchés financiers écrite en Java, puissante aussi bien d'un point de vue fonctionalités (multi-agents, multi-orders, multi-assets, intra and extra days, several price fixing, etc ...) que d'un point de vue rapidité.
-atomPython est une version très simplifiée, écrite en Python à des fins pédagogiques. Elle ne traite notamment qu'un seul ordre (LimitOrder), ne possède qu'une fixation de prix en continu et ne permet pas de multi-day. Elle est néanmoins multi-agents et multi-assets ce qui permet de nombreuses expériences sur les marchés artificiels.
+[ATOM](https://github.com/cristal-smac/atom) is a financial market simulation platform written in Java, powerful both from a functional point of view (multi-agent, multi-orders, multi-assets, intra and extra days, several price fixing, etc ...) and from a speed point of view. atomPython is a very simplified version, written in Python for educational purposes. In particular, it handles only one order (LimitOrder), has only one continuous price fixing and does not allow multi-day pricing. However, it is multi-agent and multi-assets, which allows many experiments on artificial markets.
 
-Plusieurs notebooks sont fournis afin de se familiariser avec cette plateforme
+
+
+Several notebooks are provided in order to get familiar with this platform
 
 Team : P Mathieu, R Morvan, A Fleury ([CRISTAL Lab](http://www.cristal.univ-lille.fr), [SMAC team](https://www.cristal.univ-lille.fr/?rubrique27&eid=17), [Lille University](http://www.univ-lille.fr)) , O Brandouy ([Gretha](https://gretha.u-bordeaux.fr/), [Bordeaux University](https://www.u-bordeaux.fr/))
 
@@ -19,7 +20,7 @@ A notebook to see the full range of the possibilities offered by this atom pytho
 ## tp1.ipynb
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cristal-smac/atomPython/master?filepath=tp1.ipynb)
 
-Notebook d'introduction à la manipulation de cette plateforme
+Introductory notebook to the handling of this platform
 
 ## tp2.ipynb
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cristal-smac/atomPython/master?filepath=tp2.ipynb)
@@ -27,7 +28,7 @@ Notebook d'introduction à la manipulation de cette plateforme
 Notebook d'introduction à l'écriture de code avec cette plateforme
 
 
-# Les fichiers disponibles
+# Available files
 
 *atom.py*: main file, atom core
 
@@ -35,10 +36,10 @@ Notebook d'introduction à l'écriture de code avec cette plateforme
 
 *Atom.ipynb*: A notebook to see the full range of the possibilities offered by atom
 
-*Agents.ipynb*: A notebook introduicing agents that are more "evolved" than simple ZITs
+*Agents.ipynb*: A notebook introducing agents that are more "evolved" than simple ZITs
 
-*DeterministicArtificialTraders.ipynb*: A notebook introduicing the three different kind of
-Deterministic Artificial Traders that are described in "A deterministic behaviour for realistic price dynamics
+*DeterministicArtificialTraders.ipynb*: A notebook introducing the three different kind of
+Deterministic Artificial Traders that are described in "A deterministic behaviour for realistic price dynamics"
   
 *OrderExecution.pdf/tex*: A short description about why it seems that there doesn't exist a total order on the set of limit orders
   that gives the permutation in which a sequence should be executed in order to maximize a given welfare
