@@ -25,7 +25,7 @@ Introductory notebook to the handling of this platform
 ## tp2.ipynb
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cristal-smac/atomPython/master?filepath=tp2.ipynb)
 
-Notebook d'introduction à l'écriture de code avec cette plateforme
+Introductory notebook for writing code with this platform
 
 
 # Available files
