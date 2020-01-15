@@ -3,25 +3,25 @@ class MinHeap():
 	def __init__(self, fun):
 		self.tree = []
 		self.size = 0
-		self.fun = fun # Fonction qui à x associe f(x) la valeur selon laquelle l'arbre doit être minimisé
+		self.fun = fun # Function that associates f(x) with x the value according to which the tree must be minimized.
 	def __str__(self):
 		return ""
 	def values(self):
 		return self.tree
 	def insert(self, x):
 		self.tree.append(x)
-		i = self.size # Position initiale de x
+		i = self.size # initial position of x
 		self.size += 1
-		# Percolation vers le haut
+		# Upward percolation
 		while i > 0 and self.fun(self.tree[(i-1)//2]) > self.fun(x):
 			self.tree[(i-1)//2], self.tree[i] = self.tree[i], self.tree[(i-1)//2]
 			i = (i-1)//2
 	def root(self):
 		return None if self.size == 0 else self.tree[0]
 	def greater_than_children(self, i):
-		# Retourne le plus petit des fils de i qui est strictement plus petit que i
+		# Returns the smallest son of i which is strictly smaller than i
 		if 2*i+2 < self.size:
-			l = [j for j in [2*i+1, 2*i+2] if self.fun(self.tree[j]) < self.fun(self.tree[i])] # Liste de fils str plus petit que le noeud
+			l = [j for j in [2*i+1, 2*i+2] if self.fun(self.tree[j]) < self.fun(self.tree[i])] # List of threads str smaller than the node
 			if len(l) == 0:
 				return None
 			if len(l) == 1:
@@ -41,7 +41,7 @@ class MinHeap():
 		else:
 			self.size -= 1
 			self.tree[0] = self.tree.pop()
-			# Percolation vers le bas
+			# Downward percolation
 			i = 0
 			while self.greater_than_children(i) != None:
 				j = self.greater_than_children(i)
