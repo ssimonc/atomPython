@@ -1,8 +1,8 @@
 #-----------------------------------------
 #      ATOM Minimal Market Model
 #
-# Auteur  : Philippe MATHIEU
-# Labo    : CRISTAL, Equipe SMAC
+# Author  : Philippe MATHIEU
+# Lab    : CRISTAL, Equipe SMAC
 # Date    : 16/09/2010
 # contact : philippe.mathieu@univ-lille.fr
 #-----------------------------------------
@@ -72,7 +72,7 @@ class Trader(object):
     def add_assets(self, asset, n):
         self.assets[asset] += n
     def get_wealth(self, market):
-        '''init_price: valeur supposée d'un asset quand aucun prix n'a encore été fixé '''
+        '''init_price: assumed value of an asset when no price has yet been set '''
         w = self.cash
         for asset in market.orderbooks.keys():
             w += self.assets[asset]*(market.prices[asset] if market.prices[asset] != None else market.init_price)
@@ -99,8 +99,8 @@ class DumbAgent(Trader):
 class ZITTrader(Trader):
     def __init__(self, market, initial_assets=None, cash=0, p_min=1000, p_max=9999, q_min=1, q_max=9, pb_ask=.5, pb_bid=.5):
         Trader.__init__(self, market, initial_assets, cash)
-        self.pb_ask = pb_ask # Probabilité d'envoyer un ask
-        self.pb_bid = pb_bid # Probabilité d'envoyer un bid
+        self.pb_ask = pb_ask # Probability of sending an ask order
+        self.pb_bid = pb_bid # Probability of sending a bid order
         self.p_min = p_min
         self.p_max = p_max
         self.q_min = q_min
@@ -121,7 +121,7 @@ class OrderBook:
         self.asks = bh.MinHeap(lambda x: (x.price, x.time))
         self.bids = bh.MinHeap(lambda x: (-x.price, x.time))
         self.last_transaction = None
-        self.exo_info = exo_info # Fonction N -> [-1,1] qui à un tick associe un indice de confiance dans le marché.
+        self.exo_info = exo_info # Function N -> [-1,1] which associates a market confidence index to a tick.
     def __str__(self):
         Asks = "" ; Bids = ""
         l_a = self.asks.tree[:] ; l_a.sort(key=(lambda x: (x.price, x.time)))
@@ -152,11 +152,11 @@ class OrderBook:
                 last_transaction = self.match(order.direction, market)
             if market.fix == 'S' and penultimate_transaction != None:
                 market.prices[self.name] = penultimate_transaction[2]
-                # On affiche le prix
+                # The price is displayed
                 if market.should_write('price'):
                     market.write("Price;%s;%s;%s;%i;%i;%i\n" % (self.name, penultimate_transaction[0].__str__(), penultimate_transaction[1].__str__(), penultimate_transaction[2], penultimate_transaction[3], int(time.time()*10**9-market.t0)))
                 market.nb_fixed_price += 1
-                # Puis on affiche les wealths
+                # Then the wealth get displayed
                 if market.should_write('wealth'):
                     for agent in market.traders:
                         market.write("AgentWealth;%s;%i;%i\n" % (agent.__str__(), agent.get_wealth(market), int(time.time()*10**9-market.t0)))
@@ -178,7 +178,7 @@ class OrderBook:
     def has_order_from(self, source):
         return source in [o.source for o in self.bids.tree]+[o.source for o in self.asks.tree]
     def match(self, dir, market):
-        # Si une transaction est possible, l'effectue, sachant que le dernier ordre ajouté a pour direction dir. Sinon, retourne None.
+        # If a transaction is possible, carry it out, knowing that the last order added has direction dir. Otherwise, return None.
         while self.asks.size > 0 and self.asks.root().canceled:
             self.asks.extract_root()
         while self.bids.size > 0 and self.bids.root().canceled:
@@ -190,8 +190,8 @@ class OrderBook:
         ask = self.asks.extract_root()
         bid = self.bids.extract_root()
         qty = min(ask.qty, bid.qty)
-        price = bid.price if dir == 'ASK' else ask.price # Prend le prix de l'ordre le plus ancien
-        # On met à jour les ordres et on notifie les agents
+        price = bid.price if dir == 'ASK' else ask.price # Takes the price of the oldest order
+        # Updating orders and notifying officers
         if ask.qty > qty:
             ask_old = copy(ask)
             ask.decrease_qty(qty)
@@ -207,7 +207,7 @@ class OrderBook:
         else:
             ask.source.notify(ask, None)
             bid.source.notify(bid, None)
-        # On modifie les agents
+        # modify the agents
         ask.source.add_cash(price*qty)
         ask.source.add_assets(self.name, -qty)
         bid.source.add_cash(-price*qty)
@@ -215,16 +215,16 @@ class OrderBook:
         self.last_transaction = (bid.source, ask.source, price, qty)
         if market.fix == 'L':
             market.prices[self.name] = price
-            # On affiche le prix
+            # the price is displayed
             if market.should_write('price'):
                 market.write("Price;%s;%s;%s;%i;%i;%i\n" % (self.name, bid.source.__str__(), ask.source.__str__(), price, qty, int(time.time()*10**9-market.t0)))
             market.nb_fixed_price += 1
-        # On affiche les agents qui ont été modifiés
+        # display the agents that have been modified
         if market.should_write('agent'):
             market.write("Agent;%s;%i;%s;%i;%i\n" % (ask.source.__str__(), ask.source.cash, self.name, ask.source.assets[self.name], int(time.time()*10**9-market.t0)))
-            if ask.source != bid.source: # Pour ne pas afficher deux fois la même ligne si l'agent ayant émis le ask et celui ayant émis le bid est le même.
+            if ask.source != bid.source: # do not display the same line twice if the agent that issued the ask and the agent that issued the bid are the same.
                 market.write("Agent;%s;%i;%s;%i;%i\n" % (bid.source.__str__(), bid.source.cash, self.name, bid.source.assets[self.name], int(time.time()*10**9-market.t0)))
-        # À chaque fois qu'un prix est fixé, le wealth de TOUS les agents est modifié. On les affiche donc tous.
+        # Each time a price is set, the wealth of ALL agents is changed. So we show them all.
         if market.fix == 'L':
             if market.should_write('wealth'):
                 for agent in market.traders:
@@ -234,14 +234,14 @@ class OrderBook:
 
 class Market:
     def __init__(self, list_assets, exo_infos=None, out=sys.stdout, trace='all except orderbooks', init_price=5000, hist_len=100, fix='L'):
-        # init_price : prix initial supposé des différents cours quand a aucun prix n'a encore été fixé (surtout utilisé pour le calcul du wealth)
-        # hist_len : à un asset donné, nombre de prix gardés en mémoire par le marché
+        # init_price: assumed initial price of the different prices when no price has yet been set (mostly used for wealth calculation)
+        # hist_len: at a given asset, number of prices kept in memory by the market
         self.t0 = time.time()*10**9
         self.time = 0
         self.traders = []
         self.orderbooks = dict()
         self.prices = dict()
-        self.prices_hist = dict() # Contient l'historique des prix pris par chaque asset à chaque fin de tick
+        self.prices_hist = dict() # Contains the price history taken by each asset at the end of each tick
         self.out = out
         self.out_type = 'file' if type(out).__name__ == 'TextIOWrapper' or type(out).__name__ == 'OutStream' else 'None'
         self.nb_order_sent = 0
@@ -252,7 +252,7 @@ class Market:
         self.trace = {'always': self.out_type == 'file'}
         for info_type in ['order', 'tick', 'price', 'agent', 'newagent', 'wealth', 'orderbook'] :
             self.trace[info_type] = (trace == 'all' or (trace == 'all except orderbooks' and info_type != 'orderbook') or (type(trace).__name__ == 'list' and info_type in trace)) and self.out_type == 'file'
-        # self.trace est un dictionnaire qui à un type d'information associe un booléen qui dit si on veut afficher cette info dans la trace
+        # self.trace is a dictionary that associates a boolean with a type of information that says if we want to display this information in the trace
         self.write("# LimitOrder;asset;agent;direction;price;qty\n", i='order')
         self.write("# CancelMyOrders;asset;agent\n", i='order')
         self.write("# Tick;nb_tick;timestamp\n", i='tick')
@@ -306,7 +306,7 @@ class Market:
     def run_once(self, shuffle=True):
         if shuffle:
             random.shuffle(self.traders)
-        # Au sein d'un tour, chaque agent a exactement une fois la possibilité d'envoyer un ordre pour chaque asset
+        # Within a round, each agent has exactly one opportunity to send an order for each asset
         for t in self.traders:
             for asset in self.orderbooks.keys():
                 decision = t.decide_order(self, asset)
@@ -318,14 +318,15 @@ class Market:
             self.add_trader(ZITTrader(self, [init_assets]*len(self.orderbooks.keys()), init_cash))
         for i in range(nb_turn):
             self.run_once()
+
     def replay(self, filename):
-        # Modifier toute cette merde !!! (ne fonctionne plus à cause du retrait de available_assets)
-        traders = dict() # Dictionnaire qui associe à chaque agent lu dans la trace un agent automate
+        # Changing all this s***!! (doesn't work anymore because of the removal of available_assets)
+        traders = dict() # Dictionary that associates each agent read in the trace with an automatic agent
         with open(filename, 'r') as file:
             for line in file:
                 l = line.split(';')
                 if l[0] == 'NewAgent':
-                    ias = l[3].split(',') # Liste des strings initial assets
+                    ias = l[3].split(',') # List of initial strings assets
                     ia = [int(ias[i].split(':')[1]) for i in range(len(ias))]
                     t = Trader(self, ia, int(l[2]))
                     traders[l[1]] = t
