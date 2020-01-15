@@ -79,16 +79,16 @@ def extract_limit_orders(filename):
 def draw_returns_hist(filename, asset, nb_pts, tau=1):
 	Prices = np.array(extract_prices(filename)[asset][1])
 	Returns = np.log(Prices[tau:])-np.log(Prices[:-tau])
-	Y, X, _ = plt.hist(Returns, nb_pts) # Y contient le nombre d'occurence et X les nb_pts+1 points séparant les différentes barres de l'histogramme
-	plt.clf() # On ne veut pas que le plt.hist soit affiché : il est moche
-	R = (X[1:]+X[:-1])/2 # R contient la liste des centres des abscisses des barres de l'histogramme
+	Y, X, _ = plt.hist(Returns, nb_pts) # Y contains the number of occurrences and X the nb_pts+1 points separating the different bars of the histogram.
+	plt.clf() # We do not want the plt.hist to be displayed
+	R = (X[1:]+X[:-1])/2 # R contains the list of the centers of the abscissae of the bars of the histogram.
 	r = np.max(np.abs(R))
 	R2 = np.linspace(-r, r, nb_pts*2)
 	Y = np.array(Y)
-	D = Y*R.size/(max(R)-min(R))/np.sum(Y) # D contient la densité des rentabilités
+	D = Y*R.size/(max(R)-min(R))/np.sum(Y) # D contains the density of returns
 	mu = np.mean(Returns)
 	sigma = np.sqrt(np.mean((Returns-mu)**2))
-	N = scipy.stats.norm.pdf(R2, mu, sigma) # Loi normale de même espérance et écart-type que les rentabilités
+	N = scipy.stats.norm.pdf(R2, mu, sigma) # Normal law of the same expectation and standard deviation as profitability
 	X = ((R-mu)/sigma)**4
 	plt.semilogy(R, D, 'o', label='Returns for tau = %i. Kurtosis = %.2f' % (tau, 3+scipy.stats.kurtosis(Returns)))
 	plt.semilogy(R2, N, '--', label='Normal PDF')
